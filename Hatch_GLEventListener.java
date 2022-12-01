@@ -62,8 +62,11 @@ public class Hatch_GLEventListener implements GLEventListener {
   /* Clean up memory */
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
-    room.dispose(gl);
     light.dispose(gl);
+    room.dispose(gl);
+    background.dispose(gl);
+    table.dispose(gl);
+    egg.dispose(gl);
   }
 
   // ***************************************************
@@ -73,39 +76,31 @@ public class Hatch_GLEventListener implements GLEventListener {
    */
 
   private Room room;
+  private Background background;
   private Table table;
   private Light light;
-  private Background background;
-  private Texture[] texture;   // array of textures
+  private Egg egg;
   
   private final int T_CONTAINER_DIFFUSE = 0;
   private final int T_CONTAINER_SPECULAR = 1;
 
-  private void loadTextures(GL3 gl) {
-    texture = new Texture[2];
-    texture[T_CONTAINER_DIFFUSE] = TextureLibrary.loadTexture(gl, "textures/container2.jpg");
-    texture[T_CONTAINER_SPECULAR] = TextureLibrary.loadTexture(gl, "textures/container2_specular.jpg");
-  }
-
   public void initialise(GL3 gl) {
-    loadTextures(gl);
     light = new Light(gl);
     light.setCamera(camera);
     room = new Room(gl, camera, light);
-    table = new Table(gl, camera, light);
     background = new Background(gl, camera, light);
+    table = new Table(gl, camera, light);
+    egg = new Egg(gl, camera, light);
   }
   
   public void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
-    
     room.render(gl);
-    table.render(gl);
-
     background.render(gl);
+    table.render(gl);
+    egg.render(gl);
   }
   
   // The light's position is continually being changed, so needs to be calculated for each frame.

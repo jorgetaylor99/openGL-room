@@ -18,7 +18,7 @@ public class Hatch extends JFrame {
   private final FPSAnimator animator; 
 
   public static void main(String[] args) {
-    Hatch hatch = new Hatch("Hatch by Jorge Taylor");
+    Hatch hatch = new Hatch("Hatch");
     hatch .getContentPane().setPreferredSize(dimension);
     hatch.pack();
     hatch.setVisible(true);
