@@ -25,7 +25,7 @@ public class Light {
     model = new Mat4(1);
     
     fillBuffers(gl);
-    shader = new Shader(gl, "shaders/vertex/vs_light_01.txt", "shaders/fragment/fs_light_01.txt");
+    shader = new Shader(gl, "shaders/vertex/light.glsl", "shaders/fragment/light.glsl");
   }
   
   public void setPosition(Vec3 v) {

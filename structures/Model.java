@@ -18,6 +18,7 @@ public class Model {
   private Mat4 modelMatrix;
   private Camera camera;
   private Light light;
+  private float offset;
   
   public Model(GL3 gl, Camera camera, Light light, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, Texture textureId1, Texture textureId2) {
     this.mesh = mesh;
@@ -28,6 +29,7 @@ public class Model {
     this.light = light;
     this.textureId1 = textureId1;
     this.textureId2 = textureId2;
+    this.offset = 0.0f;
   }
   
   public Model(GL3 gl, Camera camera, Light light, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, Texture textureId1) {
@@ -38,6 +40,10 @@ public class Model {
     this(gl, camera, light, shader, material, modelMatrix, mesh, null, null);
   }
   
+  public void setOffset(float offset) {
+    this.offset = offset;
+  }
+
   public void setModelMatrix(Mat4 m) {
     modelMatrix = m;
   }
@@ -67,6 +73,8 @@ public class Model {
     shader.setVec3(gl, "material.diffuse", material.getDiffuse());
     shader.setVec3(gl, "material.specular", material.getSpecular());
     shader.setFloat(gl, "material.shininess", material.getShininess());
+
+    shader.setFloat(gl, "offset", offset, 0.0f);
 
     if (textureId1!=null) {
       shader.setInt(gl, "first_texture", 0);  // be careful to match these with GL_TEXTURE0 and GL_TEXTURE1
