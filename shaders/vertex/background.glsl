@@ -9,10 +9,9 @@ out vec3 aNormal;
 out vec2 aTexCoord;
 out vec2 movingTexCoord;
 
-uniform vec2 offset;
-
 uniform mat4 model;
 uniform mat4 mvpMatrix;
+uniform vec2 offset;
 
 void main() {
   gl_Position = mvpMatrix * vec4(position, 1.0);
@@ -23,4 +22,4 @@ void main() {
   //aNormal = vec3((normalMatrix) * vec4(normal,1.0));  
   aTexCoord = texCoord;
   movingTexCoord = texCoord + offset;
-}
+};

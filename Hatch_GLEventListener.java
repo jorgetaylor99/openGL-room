@@ -6,6 +6,10 @@ import textures.*;
 import structures.*;
 
 import java.nio.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.*;
@@ -95,25 +99,79 @@ public class Hatch_GLEventListener implements GLEventListener {
   
   public void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-    light.setPosition(getLightPosition());  // changing light position each frame
+
+    light.setPosition(getLightPosition()); 
     light.render(gl);
+
     room.render(gl);
+
+    background.setBackground(getBackground());
     background.render(gl);
+
     table.render(gl);
+
+    egg.setPosition(getEggPosition());
+    egg.setRotation(getEggRotation());
     egg.render(gl);
   }
   
+  private double startTime;
+  private boolean cycle = false;
+  private double randomInterval;
+  private double count;
+
   // The light's position is continually being changed, so needs to be calculated for each frame.
   private Vec3 getLightPosition() {
     double elapsedTime = getSeconds()-startTime;
     float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime*50)));
-    float y = 3.4f;
+    float y = 10.0f;
     float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime*50)));
     return new Vec3(x,y,z);
   }
 
-  private double startTime;
-  
+  private float[] getBackground() {
+    double elapsedTime = getSeconds()-startTime;
+    double t = elapsedTime; // *0.1;
+    float offsetX = 50 * (float)(t - Math.floor(t));
+    float offsetY = 0.0f;
+    return new float[] {offsetX, offsetY};
+  }
+
+  private Vec3 getEggPosition() {
+    double elapsedTime = getSeconds()-startTime;
+    float x = 0.0f;
+    float y = 2.1f;
+    float z = 0.0f;
+
+    if (!cycle) {
+       randomInterval = elapsedTime + (Math.random() * 5 + 3);
+      cycle = true;
+    }
+
+    if ((elapsedTime > randomInterval) && cycle) {
+      count += 0.03;
+      y += 0.25f * (1.0f + (float)(-Math.cos(Math.toRadians(count*500))));
+
+      if ((y < 2.15f) && (count > 0.10)) {
+        cycle = false;
+        count = 0;
+      }
+    }
+
+    return new Vec3(x,y,z);
+  }
+
+  private float getEggRotation() {
+    double elapsedTime = getSeconds()-startTime;
+    float rotation = 0;
+
+    if ((elapsedTime > randomInterval) && cycle) {
+      rotation = 50 * (float)Math.toRadians(elapsedTime*500);
+    }
+
+    return rotation;
+  }
+
   private double getSeconds() {
     return System.currentTimeMillis()/1000.0;
   }

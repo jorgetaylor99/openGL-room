@@ -30,21 +30,24 @@ struct Material {
 uniform Material material;
 
 void main() {
-  // ambient
-  vec3 ambient = light.ambient * material.ambient * texture(first_texture, movingTexCoord).rgb;
+  // // ambient
+  // vec3 ambient = light.ambient * material.ambient * texture(first_texture, movingTexCoord).rgb;
   
-  // diffuse
-  vec3 norm = normalize(aNormal);
-  vec3 lightDir = normalize(light.position - aPos);  
-  float diff = max(dot(norm, lightDir), 0.0);
-  vec3 diffuse = light.diffuse * (diff * material.diffuse) * texture(first_texture, movingTexCoord).rgb;
+  // // diffuse
+  // vec3 norm = normalize(aNormal);
+  // vec3 lightDir = normalize(light.position - aPos);  
+  // float diff = max(dot(norm, lightDir), 0.0);
+  // vec3 diffuse = light.diffuse * (diff * material.diffuse) * texture(first_texture, movingTexCoord).rgb;
   
-  // specular 
-  vec3 viewDir = normalize(viewPos - aPos);
-  vec3 reflectDir = reflect(-lightDir, norm);  
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-  vec3 specular = light.specular * (spec * material.specular);
+  // // specular 
+  // vec3 viewDir = normalize(viewPos - aPos);
+  // vec3 reflectDir = reflect(-lightDir, norm);  
+  // float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+  // vec3 specular = light.specular * (spec * material.specular);
 
-  vec3 result = ambient + diffuse + specular;
-  fragColor = vec4(result, 1.0);
-}
+  // vec3 result = ambient + diffuse + specular;
+  // fragColor = vec4(result, 1.0);
+  fragColor = vec4(mix(texture(first_texture, aTexCoord),
+                       texture(second_texture, movingTexCoord),
+                       0.5f).rgb, 1.0f);
+};

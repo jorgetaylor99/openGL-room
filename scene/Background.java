@@ -23,6 +23,7 @@ public class Background {
   private float size = 16f;
   private Texture t0, t1, texture_cloud;
   private double startTime;
+  private float offsetX, offsetY;
 
   public Background(GL3 gl, Camera c, Light l) {
     camera = c;
@@ -44,19 +45,20 @@ public class Background {
     Mat4 modelMatrix = new Mat4(1);
     modelMatrix = Mat4.multiply(Mat4Transform.scale(size*2.0f,1f,size*2.0f), modelMatrix);
     modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(-90), modelMatrix);
-    modelMatrix = Mat4.multiply(Mat4Transform.translate(0,size*0.3f,size*1.0f), modelMatrix);
+    modelMatrix = Mat4.multiply(Mat4Transform.translate(0,size*0.3f,size*0.75f), modelMatrix);
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "shaders/vertex/background.glsl", "shaders/fragment/background.glsl");
-    double elapsedTime = getSeconds() - startTime;
-    double t = elapsedTime;  // *0.1 slows it down a bit
-    float offsetX = (float)(t - Math.floor(t));
-    float offsetY = 0.0f;
     shader.setFloat(gl, "offset", offsetX, offsetY);
-    // System.out.println(offsetX);
+    // System.out.println(offsetX + " " + offsetY);
     Model model = new Model(gl, camera, light, shader , material, modelMatrix, mesh, texture_cloud);
     return model;
   }
   
+  public void setBackground(float[] offset) {
+     offsetX = offset[0]; 
+     offsetY = offset[1]; 
+  }
+
   private double getSeconds() {
     return System.currentTimeMillis()/1000.0;
   }

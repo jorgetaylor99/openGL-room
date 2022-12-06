@@ -20,6 +20,8 @@ public class Egg {
   private Model[] egg;
   private Camera camera;
   private Light light;
+  private Vec3 position;
+  private float rotation;
   private float size = 16f;
   private Texture t0, t1, texture_egg, texture_egg_specular;
 
@@ -30,6 +32,7 @@ public class Egg {
     this.t1 = t1;
     loadTextures(gl);
     egg = new Model[1];
+    position = new Vec3(0.0f,2.1f,0.0f);
     egg[0] = makeEgg(gl);
   }
 
@@ -44,12 +47,23 @@ public class Egg {
     Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), 
                             new Vec3(1.0f, 0.5f, 0.31f), 
                             new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-    Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(1.5f,2.5f,1.5f), 
-                                Mat4Transform.translate(0,0.5f,0));
-    modelMatrix = Mat4.multiply(Mat4Transform.translate(0,4,0), modelMatrix);
+    Mat4 modelMatrix = new Mat4(1);
+    modelMatrix = Mat4.multiply(Mat4Transform.scale(1.5f,2.5f,1.5f), 
+                                Mat4Transform.translate(position));
+    modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundY(rotation), modelMatrix);
     Model sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, 
                         texture_egg, texture_egg_specular);
     return sphere;
+  }
+
+  public void setPosition(Vec3 v) {
+    position.x = v.x;
+    position.y = v.y;
+    position.z = v.z;
+  }
+
+  public void setRotation(float r) {
+    rotation = r;
   }
 
   private double startTime;
@@ -59,14 +73,11 @@ public class Egg {
   }
 
   public void render(GL3 gl) {
-    for (int i=0; i<1; i++) {
-      egg[i].render(gl);
-    }
+    egg[0] = makeEgg(gl);
+    egg[0].render(gl);
   }
 
   public void dispose(GL3 gl) {
-    for (int i=0; i<1; i++) {
-      egg[i].dispose(gl);
-    }
+    egg[0].dispose(gl);
   }
 }
