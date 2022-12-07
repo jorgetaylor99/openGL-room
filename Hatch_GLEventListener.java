@@ -1,6 +1,7 @@
 import camera.*;
 import gmaths.*;
 import light.*;
+import nodes.*;
 import scene.*;
 import textures.*;
 import structures.*;
@@ -26,7 +27,7 @@ public class Hatch_GLEventListener implements GLEventListener {
   public Hatch_GLEventListener(Camera camera) {
     this.camera = camera;
     this.camera.setPosition(new Vec3(0.0f,9.0f,-18.0f));
-    this.camera.setTarget(new Vec3(0.0f,6.0f,0.0f));
+    this.camera.setTarget(new Vec3(0.0f,4.0f,0.0f));
   }
   
   // ***************************************************
@@ -84,6 +85,7 @@ public class Hatch_GLEventListener implements GLEventListener {
   private Table table;
   private Light light;
   private Egg egg;
+  private Lamp lamp;
   
   private final int T_CONTAINER_DIFFUSE = 0;
   private final int T_CONTAINER_SPECULAR = 1;
@@ -95,6 +97,7 @@ public class Hatch_GLEventListener implements GLEventListener {
     background = new Background(gl, camera, light);
     table = new Table(gl, camera, light);
     egg = new Egg(gl, camera, light);
+    lamp = new Lamp(gl, camera, light);
   }
   
   public void render(GL3 gl) {
@@ -105,20 +108,23 @@ public class Hatch_GLEventListener implements GLEventListener {
 
     room.render(gl);
 
-    background.setBackground(getBackground());
+    background.setBackground(gl, getBackground());
     background.render(gl);
 
     table.render(gl);
 
     egg.setPosition(getEggPosition());
-    egg.setRotation(getEggRotation());
+    egg.setRotation(getEggRotation(rotation));
     egg.render(gl);
+
+    lamp.render(gl);
   }
   
   private double startTime;
   private boolean cycle = false;
   private double randomInterval;
   private double count;
+  private float rotation = 0;
 
   // The light's position is continually being changed, so needs to be calculated for each frame.
   private Vec3 getLightPosition() {
@@ -132,7 +138,7 @@ public class Hatch_GLEventListener implements GLEventListener {
   private float[] getBackground() {
     double elapsedTime = getSeconds()-startTime;
     double t = elapsedTime; // *0.1;
-    float offsetX = 50 * (float)(t - Math.floor(t));
+    float offsetX = 20 * (float)(t - Math.floor(t));
     float offsetY = 0.0f;
     return new float[] {offsetX, offsetY};
   }
@@ -161,15 +167,36 @@ public class Hatch_GLEventListener implements GLEventListener {
     return new Vec3(x,y,z);
   }
 
-  private float getEggRotation() {
+  // private void updateBranches() {
+  //   double elapsedTime = getSeconds()-startTime;
+  //   rotateAllAngle = rotateAllAngleStart*(float)Math.sin(elapsedTime);
+  //   rotateUpperAngle = rotateUpperAngleStart*(float)Math.sin(elapsedTime*0.7f);
+  //   rotateAll.setTransform(Mat4Transform.rotateAroundZ(rotateAllAngle));
+  //   rotateUpper.setTransform(Mat4Transform.rotateAroundZ(rotateUpperAngle));
+  //   twoBranchRoot.update(); // IMPORTANT – the scene graph has changed
+  // }
+
+  private float getEggRotation(float r) {
     double elapsedTime = getSeconds()-startTime;
-    float rotation = 0;
+    float rotation = r;
 
     if ((elapsedTime > randomInterval) && cycle) {
-      rotation = 50 * (float)Math.toRadians(elapsedTime*500);
+      rotation += 30 * (float)Math.toRadians(elapsedTime*500);
     }
-
+    // System.out.println(rotation);
     return rotation;
+  }
+
+  public void lamp1pose1() {
+    lamp.lamp1pose1();
+  }
+
+  public void lamp1pose2() {
+    lamp.lamp1pose2();
+  }
+
+  public void lamp1pose3() {
+    lamp.lamp1pose3();
   }
 
   private double getSeconds() {

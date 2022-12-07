@@ -17,7 +17,7 @@ import com.jogamp.opengl.util.texture.*;
 
 public class Egg {
 
-  private Model[] egg;
+  private Model egg;
   private Camera camera;
   private Light light;
   private Vec3 position;
@@ -31,9 +31,8 @@ public class Egg {
     this.t0 = t0;
     this.t1 = t1;
     loadTextures(gl);
-    egg = new Model[1];
     position = new Vec3(0.0f,2.1f,0.0f);
-    egg[0] = makeEgg(gl);
+    egg = makeEgg(gl);
   }
 
   private void loadTextures(GL3 gl) {
@@ -73,11 +72,11 @@ public class Egg {
   }
 
   public void render(GL3 gl) {
-    egg[0] = makeEgg(gl);
-    egg[0].render(gl);
+    egg = makeEgg(gl);
+    egg.render(gl);
   }
 
   public void dispose(GL3 gl) {
-    egg[0].dispose(gl);
+    egg.dispose(gl);
   }
 }

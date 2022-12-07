@@ -1,6 +1,7 @@
 javac camera/*.java
 javac gmaths/*.java
 javac light/*.java
+javac nodes/*.java
 javac objects/*.java
 javac scene/*.java
 javac structures/*.java

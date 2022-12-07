@@ -24,6 +24,7 @@ public class Background {
   private Texture t0, t1, texture_cloud;
   private double startTime;
   private float offsetX, offsetY;
+  private Shader shader;
 
   public Background(GL3 gl, Camera c, Light l) {
     camera = c;
@@ -31,6 +32,7 @@ public class Background {
     this.t0 = t0;
     this.t1 = t1;
     loadTextures(gl);
+    background = makeBackWall(gl);
   }
 
   private void loadTextures(GL3 gl) {
@@ -43,20 +45,19 @@ public class Background {
     Vec3 basecolor = new Vec3(0.5f, 0.5f, 0.5f); // grey
     Material material = new Material(basecolor, basecolor, new Vec3(0.3f, 0.3f, 0.3f), 4.0f);
     Mat4 modelMatrix = new Mat4(1);
-    modelMatrix = Mat4.multiply(Mat4Transform.scale(size*2.0f,1f,size*2.0f), modelMatrix);
+    modelMatrix = Mat4.multiply(Mat4Transform.scale(size*1.5f,1f,size*1.5f), modelMatrix);
     modelMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(-90), modelMatrix);
-    modelMatrix = Mat4.multiply(Mat4Transform.translate(0,size*0.3f,size*0.75f), modelMatrix);
+    modelMatrix = Mat4.multiply(Mat4Transform.translate(0,size*0.3f,size*0.55f), modelMatrix);
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
-    Shader shader = new Shader(gl, "shaders/vertex/background.glsl", "shaders/fragment/background.glsl");
-    shader.setFloat(gl, "offset", offsetX, offsetY);
-    // System.out.println(offsetX + " " + offsetY);
+    shader = new Shader(gl, "shaders/vertex/background.glsl", "shaders/fragment/background.glsl");
     Model model = new Model(gl, camera, light, shader , material, modelMatrix, mesh, texture_cloud);
     return model;
   }
   
-  public void setBackground(float[] offset) {
-     offsetX = offset[0]; 
-     offsetY = offset[1]; 
+  public void setBackground(GL3 gl, float[] offset) {
+      offsetX = offset[0]; 
+      offsetY = offset[1]; 
+      shader.setFloat(gl, "offset", offsetX, offsetY);
   }
 
   private double getSeconds() {
